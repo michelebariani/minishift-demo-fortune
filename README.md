@@ -9,3 +9,7 @@ A simple and silly application to be used in a Minishift demo, in progressive st
 
 * Stage 4 : Add a second (consumer) application, and exploit a base image
 
+* Stage 5 : POC of manifest templating against different profiles (e.g. local vs live) exploiting [jinja2-cli][1]
+
+[1]: https://github.com/mattrobenolt/jinja2-cli
+
