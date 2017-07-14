@@ -4,20 +4,19 @@
 # 
 
 PROFILES_FILE = profiles.yaml
-
 J2_FILES = $(wildcard app-*/*.j2)
+
 J2_TARGET_FILES = $(patsubst %.j2,%,$(J2_FILES))
 
 .PHONY: local test live clean
 
 local: PROFILE = local
-local: clean $(J2_TARGET_FILES)
 
 test: PROFILE = test
-test: clean $(J2_TARGET_FILES)
 
 live: PROFILE = live
-live: clean $(J2_TARGET_FILES)
+
+local test live: clean $(J2_TARGET_FILES)
 
 clean:
 	rm -f $(J2_TARGET_FILES)
