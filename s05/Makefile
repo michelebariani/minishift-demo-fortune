@@ -3,30 +3,45 @@
 # Manifest templates are expected to be found as app-*/*.j2
 # 
 
-PROFILES_FILE = profiles.yaml
-J2_FILES = $(wildcard app-*/*.j2)
+PROFILES_FILE := profiles.yaml
+J2_FILES := $(wildcard app-*/*.j2)
 
-J2_TARGET_FILES = $(patsubst %.j2,%,$(J2_FILES))
+LAST_PROFILE_FILE := .lastprofile
+LAST_PROFILE := $(shell if [ -e $(LAST_PROFILE_FILE) ]; then cat $(LAST_PROFILE_FILE); fi )
 
-.PHONY: local test live clean
+J2_TARGET_FILES := $(patsubst %.j2,%,$(J2_FILES))
+J2_CLEAN_CMD := rm -f $(J2_TARGET_FILES)
 
-local: PROFILE = local
 
-test: PROFILE = test
+.PHONY: local test live conditional_clean clean
 
-live: PROFILE = live
+local: PROFILE := local
 
-local test live: clean $(J2_TARGET_FILES)
+test: PROFILE := test
+
+live: PROFILE := live
+
+local test live: conditional_clean $(J2_TARGET_FILES)
+	@echo "$(PROFILE)" > $(LAST_PROFILE_FILE)
+
+
+conditional_clean:
+	@if [ "$(PROFILE)" != "$(LAST_PROFILE)" ]; then\
+	   echo $(J2_CLEAN_CMD); $(J2_CLEAN_CMD);\
+	fi
+
 
 clean:
-	rm -f $(J2_TARGET_FILES)
+	rm -f $(LAST_PROFILE_FILE)
+	$(J2_CLEAN_CMD)
+
 
 define jinja2_cmd
 	jinja2 --strict -s $(PROFILE) $@.j2 $(PROFILES_FILE) > $@
 endef
 
-%.yaml: %.yaml.j2
+%.yaml: $(PROFILES_FILE) %.yaml.j2
 	$(call jinja2_cmd)
 
-%.yml: %.yml.j2
+%.yml: $(PROFILES_FILE) %.yml.j2
 	$(call jinja2_cmd)
