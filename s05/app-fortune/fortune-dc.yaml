@@ -3,7 +3,7 @@ kind: DeploymentConfig
 metadata:
   name: fortune
 spec:
-  replicas: {{ J2_FORTUNE_REPLICAS }}
+  replicas: 2
   selector:
     app: fortune
   template:
@@ -27,10 +27,28 @@ spec:
             value: foobar
           ports:
           - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /info.php
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 2
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
         - name: db
           image: fortune/db:latest
           ports:
           - containerPort: 3306
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 3
+  initialDelaySeconds: 15
+  timeoutSeconds: 1
   triggers:
     - type: ConfigChange
     - type: ImageChange

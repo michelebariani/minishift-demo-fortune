@@ -3,7 +3,7 @@ kind: DeploymentConfig
 metadata:
   name: reader
 spec:
-  replicas: {{ J2_READER_REPLICAS }}
+  replicas: 2
   selector:
     app: reader
   template:
@@ -21,6 +21,13 @@ spec:
             value: http://fortune.fortune.svc/quote.php
           ports:
           - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /info.php
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 2
+            periodSeconds: 15
   triggers:
     - type: ConfigChange
     - type: ImageChange

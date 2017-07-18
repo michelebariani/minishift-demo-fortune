@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: reader
+spec:
+  replicas: {{ J2_READER_REPLICAS }}
+  selector:
+    app: reader
+  template:
+    metadata:
+      labels:
+        app: reader
+    spec:
+      containers:
+        - name: reader
+          image: fortune/reader:latest
+          env:
+          - name: QUOTE_NUM
+            value: '5'
+          - name: QUOTE_URL
+            value: http://fortune.fortune.svc/quote.php
+          ports:
+          - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /info.php
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 2
+            periodSeconds: 15
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: reader:latest
+        containerNames:
+          - reader
