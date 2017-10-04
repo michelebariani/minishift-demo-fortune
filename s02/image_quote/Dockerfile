@@ -10,8 +10,8 @@ ADD httpd /etc/httpd
 
 ADD www /var/www/html
 
-RUN chgrp -R 0 /etc/httpd /var/www/html /usr/lib64/httpd/modules /run/httpd && \
-    chmod -R g+rwX /etc/httpd /var/www/html /usr/lib64/httpd/modules /run/httpd
+ENV GRANTED_FILES /etc/httpd /var/www/html /usr/lib64/httpd/modules /run/httpd
+RUN chgrp -R 0 $GRANTED_FILES && chmod -R g+rwX $GRANTED_FILES
 
 EXPOSE 8080
 

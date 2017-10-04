@@ -13,5 +13,5 @@ RUN /entrypoint.sh mysqld & sleep 30 &&\
     killall mysqld &&\
     rm /docker-entrypoint-initdb.d/fortune.sql
 
-RUN chgrp -R 0 /var/lib/mysql* /var/run/mysqld /etc/mysql && \
-    chmod -R g+rwX /var/lib/mysql* /var/run/mysqld /etc/mysql
+ENV GRANTED_FILES /var/lib/mysql* /var/run/mysqld /etc/mysql
+RUN chgrp -R 0 $GRANTED_FILES && chmod -R g+rwX $GRANTED_FILES
