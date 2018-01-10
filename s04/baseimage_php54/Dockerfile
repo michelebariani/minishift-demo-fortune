@@ -1,5 +1,4 @@
 FROM centos:centos7
-MAINTAINER "Michele Bariani" <michele.bariani@docomodigital.com>
 
 RUN yum -y install httpd php && \
     yum clean all && \

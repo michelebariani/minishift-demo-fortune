@@ -1,5 +1,4 @@
 FROM mysql:5.6
-MAINTAINER "Michele Bariani" <michele.bariani@docomodigital.com>
 
 # Not production stuff, obviously :-)
 ENV MYSQL_ROOT_PASSWORD foobar
