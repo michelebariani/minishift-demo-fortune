@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: fortune
+spec:
+  replicas: {{ J2_FORTUNE_REPLICAS_MAX }}
+  selector:
+    app: fortune
+  template:
+    metadata:
+      labels:
+        app: fortune
+    spec:
+      containers:
+        - name: quote
+          image: fortune/quote:latest
+          env:
+          - name: DB_HOST
+            value: 127.0.0.1
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            value: fortune
+          - name: DB_USER
+            value: root
+          - name: DB_PASS
+            value: foobar
+          ports:
+          - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /info.php
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 2
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 300m
+        - name: db
+          image: fortune/db:latest
+          ports:
+          - containerPort: 3306
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 3
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 200m
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: quote:latest
+        containerNames:
+          - quote
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: db:latest
+        containerNames:
+          - db
