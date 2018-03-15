@@ -1,7 +1,7 @@
 #
 # jinja2-based makefile to yield proper manifest files for each profile/stage.
 # Manifest templates are expected to be found as app-*/*.j2
-# 
+#
 
 PROFILES_FILE := profiles.yaml
 J2_FILES := $(wildcard app-*/*.j2)
@@ -23,7 +23,6 @@ live: PROFILE := live
 
 local test live: conditional_clean $(J2_TARGET_FILES)
 	@echo "$(PROFILE)" > $(LAST_PROFILE_FILE)
-
 
 conditional_clean:
 	@if [ "$(PROFILE)" != "$(LAST_PROFILE)" ]; then\
