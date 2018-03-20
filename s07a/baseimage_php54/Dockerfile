@@ -3,7 +3,8 @@ FROM centos:centos7
 RUN yum -y install httpd php && \
     yum clean all && \
     rm -fr /etc/httpd/conf.d
-ADD httpd /etc/httpd
+ADD etc/httpd /etc/httpd
+ADD etc/php.ini /etc/php.ini
 
 ENV GRANTED_FILES /etc/httpd /var/www/html /usr/lib64/httpd/modules /run/httpd
 ONBUILD ADD www /var/www/html

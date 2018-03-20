@@ -8,7 +8,7 @@ ADD etc etc
 
 COPY fortune.sql /docker-entrypoint-initdb.d/fortune.sql
 
-RUN /entrypoint.sh mysqld & sleep 30 &&\
+RUN docker-entrypoint.sh mysqld & sleep 30 &&\
     killall mysqld &&\
     rm /docker-entrypoint-initdb.d/fortune.sql
 

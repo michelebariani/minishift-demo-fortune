@@ -6,7 +6,8 @@ RUN yum -y install httpd php && \
     yum clean all
 
 RUN rm -fr /etc/httpd/conf.d
-ADD httpd /etc/httpd
+ADD etc/httpd /etc/httpd
+ADD etc/php.ini /etc/php.ini
 
 ADD www /var/www/html
 
