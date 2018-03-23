@@ -21,6 +21,11 @@ spec:
             value: http://fortune.fortune.svc/quote.php
           ports:
           - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
           livenessProbe:
             httpGet:
               path: /info.php
