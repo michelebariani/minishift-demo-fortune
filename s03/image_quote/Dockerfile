@@ -2,13 +2,12 @@ FROM centos:centos7
 
 RUN yum -y install httpd php && \
     yum -y install php-mysql && \
-    yum clean all
+    yum clean all && rm -rf /var/cache/yum
 
 RUN rm -fr /etc/httpd/conf.d
-ADD etc/httpd /etc/httpd
-ADD etc/php.ini /etc/php.ini
+COPY etc etc
 
-ADD www /var/www/html
+COPY www /var/www/html
 
 ENV GRANTED_FILES /etc/httpd /var/www/html /usr/lib64/httpd/modules /run/httpd
 RUN chgrp -R 0 $GRANTED_FILES && chmod -R g+rwX $GRANTED_FILES
