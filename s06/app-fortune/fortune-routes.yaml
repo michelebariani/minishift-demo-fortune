@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: fortune
+  namespace: fortune
+spec:
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: fortune
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: fortune-info
+  namespace: fortune
+spec:
+  path: /info.php
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: fortune
