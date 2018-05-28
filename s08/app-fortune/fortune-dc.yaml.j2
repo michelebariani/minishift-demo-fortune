@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: fortune
+spec:
+  replicas: {{ J2_FORTUNE_REPLICAS_MAX }}
+  selector:
+    app: fortune
+  template:
+    metadata:
+      labels:
+        app: fortune
+    spec:
+      containers:
+        - name: quote
+          image: fortune/quote:latest
+          env:
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: fortune-config
+                key: db.host
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: fortune-config
+                key: db.port
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: fortune-secret
+                key: db.name
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: fortune-secret
+                key: db.user
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: fortune-secret
+                key: db.pass
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /info.php
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 300m
+        - name: db
+          image: fortune/db:latest
+          ports:
+          - containerPort: 3306
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+            initialDelaySeconds: 5
+          resources:
+            requests:
+              cpu: 200m
+            limits:
+              cpu: 500m
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: quote:latest
+        containerNames:
+          - quote
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        from:
+          kind: ImageStreamTag
+          name: db:latest
+        containerNames:
+          - db

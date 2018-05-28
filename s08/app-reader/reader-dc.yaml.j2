@@ -16,9 +16,15 @@ spec:
           image: fortune/reader:latest
           env:
           - name: QUOTE_NUM
-            value: '200'
+            valueFrom:
+                configMapKeyRef:
+                  name: reader-config
+                  key: quote.num
           - name: QUOTE_URL
-            value: http://fortune.fortune.svc/quote.php
+            valueFrom:
+                configMapKeyRef:
+                  name: reader-config
+                  key: quote.url
           ports:
           - containerPort: 8080
           readinessProbe:

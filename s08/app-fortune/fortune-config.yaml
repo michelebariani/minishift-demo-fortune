@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fortune-config
+data:
+  db.host: 127.0.0.1
+  db.port: "3306"

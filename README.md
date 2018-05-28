@@ -1,4 +1,4 @@
-# minishift-demo-fortune
+# openshift-demo-fortune
 
 A simple and silly application to be used in an Openshift/Minishift demo, in progressive stages:
 
@@ -17,6 +17,8 @@ A simple and silly application to be used in an Openshift/Minishift demo, in pro
 * Stage 7  : POC of autoscaling features (requires [metrics to be enabled][2])
 
 * Stage 7a : A bit overcomplicated POC of autoscaling features (keeps current number of running replicas)
+
+* Stage 8  : Introduce ConfigMap/Secret usage (although just updating them does NOT trigger a rolling update)
 
 [1]: https://github.com/mattrobenolt/jinja2-cli
 [2]: https://docs.openshift.org/latest/install_config/cluster_metrics.html

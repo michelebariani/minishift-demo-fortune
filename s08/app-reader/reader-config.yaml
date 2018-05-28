@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: reader-config
+data:
+  quote.url: http://fortune.fortune.svc/quote.php
+  quote.num: "200"
